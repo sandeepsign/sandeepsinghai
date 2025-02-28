@@ -464,6 +464,79 @@ footer {
     background-color: white;
 }
 
+/* Speaking Engagements Section */
+.section-intro {
+    text-align: center;
+    font-size: 18px;
+    max-width: 800px;
+    margin: 0 auto 50px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.speaking-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.speaking-card {
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: var(--transition);
+}
+
+.speaking-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.speaking-image {
+    flex: 0 0 40%;
+}
+
+.speaking-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.speaking-content {
+    flex: 0 0 60%;
+    padding: 30px;
+}
+
+.speaking-content h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.speaking-location {
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.speaking-location i {
+    margin-right: 5px;
+}
+
+/* Responsive styles for speaking section */
+@media (max-width: 768px) {
+    .speaking-card {
+        flex-direction: column;
+    }
+    
+    .speaking-image {
+        flex: 0 0 200px;
+    }
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
     .about-grid,
