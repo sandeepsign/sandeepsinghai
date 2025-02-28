@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Sandeep Singh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-section {
+            margin-bottom: 40px;
+        }
+        
+        .admin-section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .admin-form {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .form-row label {
+            font-weight: 500;
+        }
+        
+        .form-row input,
+        .form-row textarea,
+        .form-row select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .admin-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            justify-self: start;
+            margin-top: 10px;
+        }
+        
+        .admin-btn:hover {
+            background-color: #0062cc;
+        }
+        
+        .admin-success {
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-container">
+        <div class="nav-content">
+            <div class="logo">SS</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Back to Main Site</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <h1>Admin Panel</h1>
+        <p>Use this panel to update content on Sandeep Singh's website.</p>
+        
+        <div class="admin-section">
+            <h2>Add New Update</h2>
+            <form id="updateForm" class="admin-form">
+                <div class="form-row">
+                    <label for="updateDate">Date</label>
+                    <input type="text" id="updateDate" name="updateDate" placeholder="e.g., January 2023" required>
+                </div>
+                <div class="form-row">
+                    <label for="updateTitle">Title</label>
+                    <input type="text" id="updateTitle" name="updateTitle" placeholder="Update Title" required>
+                </div>
+                <div class="form-row">
+                    <label for="updateDescription">Description</label>
+                    <textarea id="updateDescription" name="updateDescription" placeholder="Update Description" required></textarea>
+                </div>
+                <button type="submit" class="admin-btn">Add Update</button>
+                <div id="updateSuccess" class="admin-success">Update added successfully!</div>
+            </form>
+        </div>
+        
+        <div class="admin-section">
+            <h2>Add New Accomplishment</h2>
+            <form id="accomplishmentForm" class="admin-form">
+                <div class="form-row">
+                    <label for="accomplishmentIcon">Icon</label>
+                    <select id="accomplishmentIcon" name="accomplishmentIcon" required>
+                        <option value="award">Award</option>
+                        <option value="lightbulb">Lightbulb</option>
+                        <option value="book">Book</option>
+                        <option value="users">Users/Team</option>
+                        <option value="certificate">Certificate</option>
+                        <option value="code">Code</option>
+                        <option value="trophy">Trophy</option>
+                        <option value="star">Star</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="accomplishmentTitle">Title</label>
+                    <input type="text" id="accomplishmentTitle" name="accomplishmentTitle" placeholder="Accomplishment Title" required>
+                </div>
+                <div class="form-row">
+                    <label for="accomplishmentDescription">Description</label>
+                    <textarea id="accomplishmentDescription" name="accomplishmentDescription" placeholder="Accomplishment Description" required></textarea>
+                </div>
+                <button type="submit" class="admin-btn">Add Accomplishment</button>
+                <div id="accomplishmentSuccess" class="admin-success">Accomplishment added successfully!</div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Update form handler
+            const updateForm = document.getElementById('updateForm');
+            const updateSuccess = document.getElementById('updateSuccess');
+            
+            updateForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const date = document.getElementById('updateDate').value;
+                const title = document.getElementById('updateTitle').value;
+                const description = document.getElementById('updateDescription').value;
+                
+                // In a real implementation, this would send data to a server/database
+                console.log('New Update:', { date, title, description });
+                
+                // Show success message
+                updateSuccess.style.display = 'block';
+                
+                // Reset form
+                updateForm.reset();
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    updateSuccess.style.display = 'none';
+                }, 3000);
+            });
+            
+            // Accomplishment form handler
+            const accomplishmentForm = document.getElementById('accomplishmentForm');
+            const accomplishmentSuccess = document.getElementById('accomplishmentSuccess');
+            
+            accomplishmentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const icon = document.getElementById('accomplishmentIcon').value;
+                const title = document.getElementById('accomplishmentTitle').value;
+                const description = document.getElementById('accomplishmentDescription').value;
+                
+                // In a real implementation, this would send data to a server/database
+                console.log('New Accomplishment:', { icon, title, description });
+                
+                // Show success message
+                accomplishmentSuccess.style.display = 'block';
+                
+                // Reset form
+                accomplishmentForm.reset();
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    accomplishmentSuccess.style.display = 'none';
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
