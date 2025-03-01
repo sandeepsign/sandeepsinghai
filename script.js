@@ -37,9 +37,10 @@ function initNeuralNetworkAnimation() {
         constructor(x, y) {
             this.x = x;
             this.y = y;
-            this.radius = Math.random() * 2 + 1;
-            this.vx = Math.random() * 1 - 0.5;
-            this.vy = Math.random() * 1 - 0.5;
+            // Increase node size by making radius larger
+            this.radius = Math.random() * 3 + 2; // Increased from 2+1 to 3+2
+            this.vx = Math.random() * 1.5 - 0.75; // Increased velocity for more movement
+            this.vy = Math.random() * 1.5 - 0.75;
             this.initialX = x;
             this.initialY = y;
         }
@@ -47,7 +48,7 @@ function initNeuralNetworkAnimation() {
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; // Increased opacity
             ctx.fill();
         }
         
@@ -107,12 +108,12 @@ function initNeuralNetworkAnimation() {
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Draw mouse trail effect
+        // Draw enhanced mouse trail effect
         ctx.beginPath();
-        ctx.arc(mouseX, mouseY, 150, 0, Math.PI * 2);
-        const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 150);
-        gradient.addColorStop(0, 'rgba(120, 200, 255, 0.15)');
-        gradient.addColorStop(1, 'rgba(120, 200, 255, 0)');
+        ctx.arc(mouseX, mouseY, 180, 0, Math.PI * 2); // Increased radius from 150 to 180
+        const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 180);
+        gradient.addColorStop(0, 'rgba(140, 220, 255, 0.25)'); // Brighter blue and more opacity
+        gradient.addColorStop(1, 'rgba(140, 220, 255, 0)');
         ctx.fillStyle = gradient;
         ctx.fill();
         
@@ -137,13 +138,14 @@ function initNeuralNetworkAnimation() {
                     
                     // Add gradient effect based on distance and mouse proximity
                     const baseOpacity = 1 - distance / 200;
-                    const finalOpacity = baseOpacity * 0.5 + mouseInfluence * 0.5;
+                    // Increase opacity by raising the minimum values
+                    const finalOpacity = Math.max(0.3, baseOpacity * 0.6 + mouseInfluence * 0.6);
                     const color = mouseInfluence > 0.5 ? 
-                        `rgba(160, 220, 255, ${finalOpacity})` : 
-                        `rgba(100, 180, 255, ${finalOpacity})`;
+                        `rgba(180, 230, 255, ${finalOpacity})` : // Brighter blue
+                        `rgba(120, 200, 255, ${finalOpacity})`;  // Brighter blue
                     
                     ctx.strokeStyle = color;
-                    ctx.lineWidth = 0.8 + mouseInfluence * 1.2; // Thicker lines near mouse
+                    ctx.lineWidth = 1.2 + mouseInfluence * 1.8; // Increased line thickness
                     ctx.stroke();
                 }
             }
