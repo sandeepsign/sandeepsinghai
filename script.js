@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Image Carousel
     initCarousel();
     
+    // Initialize neural network animation
+    initNeuralNetworkAnimation();
+    
     const contactForm = document.getElementById('contactForm');
     
     if (contactForm) {
@@ -169,6 +172,130 @@ function initCarousel() {
         
         // Update indicators
         document.querySelectorAll('.carousel-indicator').forEach((indicator, index) => {
+
+
+// Neural Network Animation
+function initNeuralNetworkAnimation() {
+    const canvas = document.getElementById('neuralNetworkCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Mouse position
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    
+    // Track mouse position
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+    
+    // Node class
+    class Node {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.radius = Math.random() * 2 + 1;
+            this.vx = Math.random() * 1 - 0.5;
+            this.vy = Math.random() * 1 - 0.5;
+            this.initialX = x;
+            this.initialY = y;
+        }
+        
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.fill();
+        }
+        
+        update() {
+            // Add mouse influence - nodes move slightly towards mouse
+            const dx = mouseX - this.x;
+            const dy = mouseY - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 200) {
+                this.vx += dx / distance * 0.05;
+                this.vy += dy / distance * 0.05;
+            }
+            
+            // Add slight return to original position
+            this.vx += (this.initialX - this.x) * 0.01;
+            this.vy += (this.initialY - this.y) * 0.01;
+            
+            // Apply velocity with damping
+            this.vx *= 0.95;
+            this.vy *= 0.95;
+            
+            // Update position
+            this.x += this.vx;
+            this.y += this.vy;
+            
+            // Keep nodes within boundaries
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        }
+    }
+    
+    // Create nodes
+    const nodeCount = Math.min(100, Math.round(window.innerWidth * window.innerHeight / 10000));
+    const nodes = [];
+    
+    for (let i = 0; i < nodeCount; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        nodes.push(new Node(x, y));
+    }
+    
+    // Animation loop
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw connections between nodes
+        ctx.strokeStyle = 'rgba(100, 150, 255, 0.1)';
+        ctx.lineWidth = 0.5;
+        
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    ctx.beginPath();
+                    ctx.moveTo(nodes[i].x, nodes[i].y);
+                    ctx.lineTo(nodes[j].x, nodes[j].y);
+                    ctx.globalAlpha = 1 - distance / 150;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                }
+            }
+        }
+        
+        // Update and draw nodes
+        nodes.forEach(node => {
+            node.update();
+            node.draw();
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+}
+
+
             if (index === currentSlide) {
                 indicator.classList.add('active');
             } else {
