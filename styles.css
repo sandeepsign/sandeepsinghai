@@ -35,6 +35,7 @@ body {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .nav-content {
@@ -44,32 +45,80 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
+    position: relative;
 }
 
 .logo {
     color: #fff;
     font-size: 24px;
     font-weight: 600;
+    position: relative;
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
 .nav-links {
     display: flex;
     list-style: none;
+    position: relative;
 }
 
 .nav-links li {
     margin-left: 30px;
+    position: relative;
 }
 
 .nav-links a {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     font-size: 14px;
-    transition: var(--transition);
+    transition: all 0.3s ease;
+    padding: 8px 0;
+    position: relative;
+    display: inline-block;
+}
+
+.nav-links a::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent-color);
+    transition: width 0.3s ease;
 }
 
 .nav-links a:hover {
     color: #fff;
+    transform: translateY(-2px);
+}
+
+.nav-links a:hover::before {
+    width: 100%;
+}
+
+/* Nav mouse follower effect */
+.nav-mouse-follower {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 1001;
+    box-shadow: 0 0 15px var(--accent-color), 0 0 5px var(--accent-color);
+    transition: transform 0.1s ease, opacity 0.3s ease;
+}
+
+/* Nav link active state */
+.nav-links a.active::before {
+    width: 100%;
 }
 
 /* Hero section */

@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize neural network animation
     initNeuralNetworkAnimation();
     
+    // Initialize navigation effects
+    initNavAnimations();
+    
     const contactForm = document.getElementById('contactForm');
     
     if (contactForm) {
@@ -332,6 +335,126 @@ function initCarousel() {
         currentSlide = index;
         updateCarousel();
     }
+
+
+// Initialize navigation animations
+function initNavAnimations() {
+    const navContainer = document.querySelector('.nav-container');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    
+    if (!navContainer) return;
+    
+    // Create mouse follower element
+    const mouseFollower = document.createElement('div');
+    mouseFollower.className = 'nav-mouse-follower';
+    navContainer.appendChild(mouseFollower);
+    
+    // Add animation to navigation on mouse move
+    navContainer.addEventListener('mousemove', (e) => {
+        const navRect = navContainer.getBoundingClientRect();
+        const followerX = e.clientX - navRect.left;
+        const followerY = e.clientY - navRect.top;
+        
+        // Move the follower with slight delay for smooth effect
+        mouseFollower.style.opacity = '1';
+        mouseFollower.style.transform = `translate(${followerX}px, ${followerY}px) scale(1)`;
+        
+        // Add subtle glow effect to links near the mouse
+        navLinks.forEach(link => {
+            const linkRect = link.getBoundingClientRect();
+            const linkCenterX = linkRect.left + linkRect.width / 2 - navRect.left;
+            const linkCenterY = linkRect.top + linkRect.height / 2 - navRect.top;
+            
+            // Calculate distance between mouse and link center
+            const distance = Math.sqrt(
+                Math.pow(followerX - linkCenterX, 2) + 
+                Math.pow(followerY - linkCenterY, 2)
+            );
+            
+            // Apply glow effect based on proximity
+            if (distance < 100) {
+                const intensity = 1 - (distance / 100);
+                link.style.textShadow = `0 0 ${intensity * 10}px rgba(255, 255, 255, ${intensity * 0.8})`;
+                link.style.transform = `translateY(-${intensity * 3}px)`;
+            } else {
+                link.style.textShadow = 'none';
+                link.style.transform = 'translateY(0)';
+            }
+        });
+    });
+    
+    // Reset effects when mouse leaves the nav
+    navContainer.addEventListener('mouseleave', () => {
+        mouseFollower.style.opacity = '0';
+        navLinks.forEach(link => {
+            link.style.textShadow = 'none';
+            link.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Add click ripple effect
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            // Create ripple element
+            const ripple = document.createElement('span');
+            ripple.className = 'nav-ripple';
+            ripple.style.position = 'absolute';
+            ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.pointerEvents = 'none';
+            
+            // Position ripple at click point
+            const x = e.offsetX;
+            const y = e.offsetY;
+            const size = Math.max(link.offsetWidth, link.offsetHeight) * 2;
+            
+            ripple.style.width = `${size}px`;
+            ripple.style.height = `${size}px`;
+            ripple.style.left = `${x - size/2}px`;
+            ripple.style.top = `${y - size/2}px`;
+            
+            link.appendChild(ripple);
+            
+            // Animate and remove ripple
+            ripple.style.transition = 'transform 0.6s ease-out, opacity 0.6s ease-out';
+            ripple.style.transform = 'scale(1)';
+            ripple.style.opacity = '0';
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+    
+    // Set active link based on scroll position
+    updateActiveNavLink();
+    window.addEventListener('scroll', updateActiveNavLink);
+}
+
+// Update active navigation link based on scroll position
+function updateActiveNavLink() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    
+    const scrollPosition = window.scrollY + 100; // Offset for better activation
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${sectionId}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+    });
+}
+
     
     // Initialize first slide
     updateCarousel();
