@@ -634,6 +634,99 @@ footer {
     }
 }
 
+/* Conference section */
+.conference-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.conference-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.conference-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--accent-color), #9C27B0);
+}
+
+.conference-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.conference-icon {
+    font-size: 30px;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+}
+
+.conference-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.conference-type {
+    color: var(--accent-color);
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.conference-description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.conference-link {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 14px;
+    transition: var(--transition);
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.conference-link i {
+    margin-left: 8px;
+    font-size: 12px;
+}
+
+.conference-link:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.dark-text {
+    color: var(--text-color);
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
     .about-grid,
@@ -641,7 +734,8 @@ footer {
         grid-template-columns: 1fr;
     }
     
-    .publications-grid {
+    .publications-grid,
+    .conference-grid {
         grid-template-columns: 1fr;
     }
     
@@ -673,7 +767,8 @@ footer {
         font-size: 36px;
     }
     
-    .publication-card {
+    .publication-card,
+    .conference-card {
         margin-bottom: 15px;
     }
 }
