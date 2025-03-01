@@ -1,4 +1,75 @@
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Image Carousel
+    initCarousel();
+    
+    // Initialize neural network animation
+    initNeuralNetworkAnimation();
+    
+    const contactForm = document.getElementById('contactForm');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // In a real implementation, you would send this data to a server
+            console.log({
+                name,
+                email,
+                message
+            });
+            
+            // Show success message (in a real app, this would happen after successful API response)
+            alert('Thank you for your message! Sandeep will get back to you soon.');
+            
+            // Reset form
+            contactForm.reset();
+        });
+    }
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80, // Offset for fixed header
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Scroll animations
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all section elements
+    document.querySelectorAll('.section').forEach(section => {
+        observer.observe(section);
+    });
+});
+
 // Neural Network Animation
 function initNeuralNetworkAnimation() {
     const canvas = document.getElementById('neuralNetworkCanvas');
@@ -73,8 +144,8 @@ function initNeuralNetworkAnimation() {
         }
     }
     
-    // Create nodes
-    const nodeCount = Math.min(100, Math.round(window.innerWidth * window.innerHeight / 10000));
+    // Create nodes - more nodes for a denser graph
+    const nodeCount = Math.min(150, Math.round(window.innerWidth * window.innerHeight / 8000));
     const nodes = [];
     
     for (let i = 0; i < nodeCount; i++) {
@@ -88,8 +159,8 @@ function initNeuralNetworkAnimation() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Draw connections between nodes
-        ctx.strokeStyle = 'rgba(100, 150, 255, 0.1)';
-        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'rgba(100, 180, 255, 0.2)'; // Brighter blue with higher opacity
+        ctx.lineWidth = 0.8; // Slightly thicker lines
         
         for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
@@ -97,13 +168,16 @@ function initNeuralNetworkAnimation() {
                 const dy = nodes[i].y - nodes[j].y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
-                if (distance < 150) {
+                // Increase connection distance for a more connected graph
+                if (distance < 200) {
                     ctx.beginPath();
                     ctx.moveTo(nodes[i].x, nodes[i].y);
                     ctx.lineTo(nodes[j].x, nodes[j].y);
-                    ctx.globalAlpha = 1 - distance / 150;
+                    
+                    // Add gradient effect based on distance
+                    const opacity = 1 - distance / 200;
+                    ctx.strokeStyle = `rgba(100, 180, 255, ${opacity * 0.5})`; 
                     ctx.stroke();
-                    ctx.globalAlpha = 1;
                 }
             }
         }
@@ -119,78 +193,6 @@ function initNeuralNetworkAnimation() {
     
     animate();
 }
-
-// Form handling
-document.addEventListener('DOMContentLoaded', () => {
-    // Image Carousel
-    initCarousel();
-    
-    // Initialize neural network animation
-    initNeuralNetworkAnimation();
-    
-    const contactForm = document.getElementById('contactForm');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            
-            // In a real implementation, you would send this data to a server
-            console.log({
-                name,
-                email,
-                message
-            });
-            
-            // Show success message (in a real app, this would happen after successful API response)
-            alert('Thank you for your message! Sandeep will get back to you soon.');
-            
-            // Reset form
-            contactForm.reset();
-        });
-    }
-    
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80, // Offset for fixed header
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-    
-    // Scroll animations
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-            }
-        });
-    }, observerOptions);
-    
-    // Observe all section elements
-    document.querySelectorAll('.section').forEach(section => {
-        observer.observe(section);
-    });
-});
 
 // Add functionality to update content (for admin use in the future)
 // This is a simple placeholder function - in a real implementation,
