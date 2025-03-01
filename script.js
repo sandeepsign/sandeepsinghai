@@ -116,23 +116,30 @@ function initNeuralNetworkAnimation() {
         }
         
         update() {
-            // Add mouse influence - nodes move slightly towards mouse
+            // Add stronger mouse influence - nodes move more dramatically towards mouse
             const dx = mouseX - this.x;
             const dy = mouseY - this.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
-            if (distance < 200) {
-                this.vx += dx / distance * 0.05;
-                this.vy += dy / distance * 0.05;
+            // Increased influence radius and strength
+            if (distance < 300) {
+                const strength = 0.15; // Increased from 0.05
+                this.vx += dx / distance * strength;
+                this.vy += dy / distance * strength;
+                
+                // Add ripple effect based on mouse movement
+                const mouseFactor = 0.3;
+                this.vx += (Math.random() - 0.5) * mouseFactor;
+                this.vy += (Math.random() - 0.5) * mouseFactor;
             }
             
-            // Add slight return to original position
-            this.vx += (this.initialX - this.x) * 0.01;
-            this.vy += (this.initialY - this.y) * 0.01;
+            // Weaker return to original position for more dynamic movement
+            this.vx += (this.initialX - this.x) * 0.005; // Reduced from 0.01
+            this.vy += (this.initialY - this.y) * 0.005;
             
-            // Apply velocity with damping
-            this.vx *= 0.95;
-            this.vy *= 0.95;
+            // Slower damping for more persistent movement
+            this.vx *= 0.97; // Changed from 0.95
+            this.vy *= 0.97;
             
             // Update position
             this.x += this.vx;
@@ -158,10 +165,16 @@ function initNeuralNetworkAnimation() {
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Draw connections between nodes
-        ctx.strokeStyle = 'rgba(100, 180, 255, 0.2)'; // Brighter blue with higher opacity
-        ctx.lineWidth = 0.8; // Slightly thicker lines
+        // Draw mouse trail effect
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, 150, 0, Math.PI * 2);
+        const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 150);
+        gradient.addColorStop(0, 'rgba(120, 200, 255, 0.15)');
+        gradient.addColorStop(1, 'rgba(120, 200, 255, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
         
+    // Draw connections between nodes with enhanced visual effects
         for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
                 const dx = nodes[i].x - nodes[j].x;
@@ -174,9 +187,21 @@ function initNeuralNetworkAnimation() {
                     ctx.moveTo(nodes[i].x, nodes[i].y);
                     ctx.lineTo(nodes[j].x, nodes[j].y);
                     
-                    // Add gradient effect based on distance
-                    const opacity = 1 - distance / 200;
-                    ctx.strokeStyle = `rgba(100, 180, 255, ${opacity * 0.5})`; 
+                    // Add mouse proximity effect - connections closer to mouse are brighter
+                    const midX = (nodes[i].x + nodes[j].x) / 2;
+                    const midY = (nodes[i].y + nodes[j].y) / 2;
+                    const mouseDistance = Math.sqrt((midX - mouseX) ** 2 + (midY - mouseY) ** 2);
+                    const mouseInfluence = Math.max(0, 1 - mouseDistance / 300);
+                    
+                    // Add gradient effect based on distance and mouse proximity
+                    const baseOpacity = 1 - distance / 200;
+                    const finalOpacity = baseOpacity * 0.5 + mouseInfluence * 0.5;
+                    const color = mouseInfluence > 0.5 ? 
+                        `rgba(160, 220, 255, ${finalOpacity})` : 
+                        `rgba(100, 180, 255, ${finalOpacity})`;
+                    
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 0.8 + mouseInfluence * 1.2; // Thicker lines near mouse
                     ctx.stroke();
                 }
             }
