@@ -17,15 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
             
-            // In a real implementation, you would send this data to a server
-            console.log({
-                name,
-                email,
-                message
-            });
+            // Create a mailto link
+            const mailtoLink = `mailto:sandeep.sign@gmail.com?subject=Contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
             
-            // Show success message (in a real app, this would happen after successful API response)
-            alert('Thank you for your message! Sandeep will get back to you soon.');
+            // Open the email client
+            window.location.href = mailtoLink;
+            
+            // Show success message
+            alert('Thank you for your message! Your email client will open to send a message to Sandeep.');
             
             // Reset form
             contactForm.reset();
