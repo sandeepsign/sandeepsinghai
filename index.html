@@ -23,8 +23,8 @@
         </div>
     </nav>
 
-    <canvas id="neuralNetworkCanvas"></canvas>
-<section class="hero">
+    <section class="hero">
+        <canvas id="neuralNetworkCanvas"></canvas>
         <div class="hero-content">
             <h1>Sandeep Singh</h1>
             <h2>AI Professional in Silicon Valley</h2>
@@ -397,16 +397,5 @@
     </footer>
 
     <script src="script.js"></script>
-    <script>
-        // Ensure the animation starts
-        window.onload = function() {
-            console.log("Window loaded, forcing animation start");
-            if (typeof initNeuralNetworkAnimation === 'function') {
-                initNeuralNetworkAnimation();
-            } else {
-                console.error("Animation function not found on window load");
-            }
-        };
-    </script>
 </body>
 </html>

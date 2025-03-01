@@ -1,22 +1,86 @@
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Image Carousel
+    initCarousel();
+    
+    // Initialize neural network animation
+    initNeuralNetworkAnimation();
+    
+    const contactForm = document.getElementById('contactForm');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // In a real implementation, you would send this data to a server
+            console.log({
+                name,
+                email,
+                message
+            });
+            
+            // Show success message (in a real app, this would happen after successful API response)
+            alert('Thank you for your message! Sandeep will get back to you soon.');
+            
+            // Reset form
+            contactForm.reset();
+        });
+    }
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80, // Offset for fixed header
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Scroll animations
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all section elements
+    document.querySelectorAll('.section').forEach(section => {
+        observer.observe(section);
+    });
+});
+
 // Neural Network Animation
 function initNeuralNetworkAnimation() {
     const canvas = document.getElementById('neuralNetworkCanvas');
-    if (!canvas) {
-        console.error('Neural network canvas not found');
-        return;
-    }
-    console.log('Initializing neural network animation');
+    if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
     
-    // Set canvas size to document dimensions
+    // Set canvas size
     function resizeCanvas() {
         canvas.width = window.innerWidth;
-        canvas.height = Math.max(
-            document.body.scrollHeight,
-            document.documentElement.scrollHeight
-        );
+        canvas.height = window.innerHeight;
     }
     
     resizeCanvas();
@@ -26,10 +90,10 @@ function initNeuralNetworkAnimation() {
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     
-    // Track mouse position considering scroll
+    // Track mouse position
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
-        mouseY = e.clientY + window.scrollY;
+        mouseY = e.clientY;
     });
     
     // Node class
@@ -37,10 +101,9 @@ function initNeuralNetworkAnimation() {
         constructor(x, y) {
             this.x = x;
             this.y = y;
-            // Increase node size by making radius larger
-            this.radius = Math.random() * 3 + 2; // Increased from 2+1 to 3+2
-            this.vx = Math.random() * 1.5 - 0.75; // Increased velocity for more movement
-            this.vy = Math.random() * 1.5 - 0.75;
+            this.radius = Math.random() * 2 + 1;
+            this.vx = Math.random() * 1 - 0.5;
+            this.vy = Math.random() * 1 - 0.5;
             this.initialX = x;
             this.initialY = y;
         }
@@ -48,7 +111,7 @@ function initNeuralNetworkAnimation() {
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; // Increased opacity
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
             ctx.fill();
         }
         
@@ -88,19 +151,13 @@ function initNeuralNetworkAnimation() {
         }
     }
     
-    // Create nodes - more nodes for a denser graph across the entire page
-    const nodeCount = Math.min(200, Math.round(window.innerWidth * window.innerHeight / 6000));
+    // Create nodes - more nodes for a denser graph
+    const nodeCount = Math.min(150, Math.round(window.innerWidth * window.innerHeight / 8000));
     const nodes = [];
-    
-    // Create nodes distributed across the entire document height, not just viewport
-    const documentHeight = Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight
-    );
     
     for (let i = 0; i < nodeCount; i++) {
         const x = Math.random() * canvas.width;
-        const y = Math.random() * documentHeight;
+        const y = Math.random() * canvas.height;
         nodes.push(new Node(x, y));
     }
     
@@ -108,16 +165,16 @@ function initNeuralNetworkAnimation() {
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Draw enhanced mouse trail effect
+        // Draw mouse trail effect
         ctx.beginPath();
-        ctx.arc(mouseX, mouseY, 180, 0, Math.PI * 2); // Increased radius from 150 to 180
-        const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 180);
-        gradient.addColorStop(0, 'rgba(140, 220, 255, 0.25)'); // Brighter blue and more opacity
-        gradient.addColorStop(1, 'rgba(140, 220, 255, 0)');
+        ctx.arc(mouseX, mouseY, 150, 0, Math.PI * 2);
+        const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 150);
+        gradient.addColorStop(0, 'rgba(120, 200, 255, 0.15)');
+        gradient.addColorStop(1, 'rgba(120, 200, 255, 0)');
         ctx.fillStyle = gradient;
         ctx.fill();
         
-        // Draw connections between nodes with enhanced visual effects
+    // Draw connections between nodes with enhanced visual effects
         for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
                 const dx = nodes[i].x - nodes[j].x;
@@ -138,14 +195,13 @@ function initNeuralNetworkAnimation() {
                     
                     // Add gradient effect based on distance and mouse proximity
                     const baseOpacity = 1 - distance / 200;
-                    // Increase opacity by raising the minimum values
-                    const finalOpacity = Math.max(0.3, baseOpacity * 0.6 + mouseInfluence * 0.6);
+                    const finalOpacity = baseOpacity * 0.5 + mouseInfluence * 0.5;
                     const color = mouseInfluence > 0.5 ? 
-                        `rgba(180, 230, 255, ${finalOpacity})` : // Brighter blue
-                        `rgba(120, 200, 255, ${finalOpacity})`;  // Brighter blue
+                        `rgba(160, 220, 255, ${finalOpacity})` : 
+                        `rgba(100, 180, 255, ${finalOpacity})`;
                     
                     ctx.strokeStyle = color;
-                    ctx.lineWidth = 1.2 + mouseInfluence * 1.8; // Increased line thickness
+                    ctx.lineWidth = 0.8 + mouseInfluence * 1.2; // Thicker lines near mouse
                     ctx.stroke();
                 }
             }
@@ -161,6 +217,45 @@ function initNeuralNetworkAnimation() {
     }
     
     animate();
+}
+
+// Add functionality to update content (for admin use in the future)
+// This is a simple placeholder function - in a real implementation,
+// this would involve authentication and a backend API
+function addUpdate(date, title, description) {
+    const updatesContainer = document.querySelector('.updates-container');
+    
+    if (!updatesContainer) return;
+    
+    const updateCard = document.createElement('div');
+    updateCard.className = 'update-card';
+    
+    updateCard.innerHTML = `
+        <div class="update-date">${date}</div>
+        <h3>${title}</h3>
+        <p>${description}</p>
+    `;
+    
+    // Insert at the beginning to show newest first
+    updatesContainer.insertBefore(updateCard, updatesContainer.firstChild);
+}
+
+// Function to add new accomplishment (for future use)
+function addAccomplishment(icon, title, description) {
+    const accomplishmentGrid = document.querySelector('.accomplishment-grid');
+    
+    if (!accomplishmentGrid) return;
+    
+    const card = document.createElement('div');
+    card.className = 'accomplishment-card';
+    
+    card.innerHTML = `
+        <div class="accomplishment-icon"><i class="fas fa-${icon}"></i></div>
+        <h3>${title}</h3>
+        <p>${description}</p>
+    `;
+    
+    accomplishmentGrid.appendChild(card);
 }
 
 // Initialize the image carousel
@@ -247,119 +342,3 @@ function initCarousel() {
         updateCarousel();
     });
 }
-
-// Add functionality to update content (for admin use in the future)
-// This is a simple placeholder function - in a real implementation,
-// this would involve authentication and a backend API
-function addUpdate(date, title, description) {
-    const updatesContainer = document.querySelector('.updates-container');
-    
-    if (!updatesContainer) return;
-    
-    const updateCard = document.createElement('div');
-    updateCard.className = 'update-card';
-    
-    updateCard.innerHTML = `
-        <div class="update-date">${date}</div>
-        <h3>${title}</h3>
-        <p>${description}</p>
-    `;
-    
-    // Insert at the beginning to show newest first
-    updatesContainer.insertBefore(updateCard, updatesContainer.firstChild);
-}
-
-// Function to add new accomplishment (for future use)
-function addAccomplishment(icon, title, description) {
-    const accomplishmentGrid = document.querySelector('.accomplishment-grid');
-    
-    if (!accomplishmentGrid) return;
-    
-    const card = document.createElement('div');
-    card.className = 'accomplishment-card';
-    
-    card.innerHTML = `
-        <div class="accomplishment-icon"><i class="fas fa-${icon}"></i></div>
-        <h3>${title}</h3>
-        <p>${description}</p>
-    `;
-    
-    accomplishmentGrid.appendChild(card);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded');
-    
-    // Image Carousel
-    initCarousel();
-    
-    // Initialize neural network animation with explicit function call
-    console.log('About to initialize neural network animation');
-    window.setTimeout(() => {
-        initNeuralNetworkAnimation();
-        console.log('Neural network animation initialized');
-    }, 100);
-    
-    const contactForm = document.getElementById('contactForm');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            
-            // In a real implementation, you would send this data to a server
-            console.log({
-                name,
-                email,
-                message
-            });
-            
-            // Show success message (in a real app, this would happen after successful API response)
-            alert('Thank you for your message! Sandeep will get back to you soon.');
-            
-            // Reset form
-            contactForm.reset();
-        });
-    }
-    
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80, // Offset for fixed header
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-    
-    // Scroll animations
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-            }
-        });
-    }, observerOptions);
-    
-    // Observe all section elements
-    document.querySelectorAll('.section').forEach(section => {
-        observer.observe(section);
-    });
-});
