@@ -77,10 +77,13 @@ function initNeuralNetworkAnimation() {
     
     const ctx = canvas.getContext('2d');
     
-    // Set canvas size
+    // Set canvas size to document dimensions
     function resizeCanvas() {
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.height = Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight
+        );
     }
     
     resizeCanvas();
@@ -90,10 +93,10 @@ function initNeuralNetworkAnimation() {
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     
-    // Track mouse position
+    // Track mouse position considering scroll
     window.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
-        mouseY = e.clientY;
+        mouseY = e.clientY + window.scrollY;
     });
     
     // Node class
@@ -151,13 +154,19 @@ function initNeuralNetworkAnimation() {
         }
     }
     
-    // Create nodes - more nodes for a denser graph
-    const nodeCount = Math.min(150, Math.round(window.innerWidth * window.innerHeight / 8000));
+    // Create nodes - more nodes for a denser graph across the entire page
+    const nodeCount = Math.min(200, Math.round(window.innerWidth * window.innerHeight / 6000));
     const nodes = [];
+    
+    // Create nodes distributed across the entire document height, not just viewport
+    const documentHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+    );
     
     for (let i = 0; i < nodeCount; i++) {
         const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
+        const y = Math.random() * documentHeight;
         nodes.push(new Node(x, y));
     }
     
