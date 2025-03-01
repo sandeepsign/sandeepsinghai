@@ -397,5 +397,16 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Ensure the animation starts
+        window.onload = function() {
+            console.log("Window loaded, forcing animation start");
+            if (typeof initNeuralNetworkAnimation === 'function') {
+                initNeuralNetworkAnimation();
+            } else {
+                console.error("Animation function not found on window load");
+            }
+        };
+    </script>
 </body>
 </html>

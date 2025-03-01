@@ -2,7 +2,11 @@
 // Neural Network Animation
 function initNeuralNetworkAnimation() {
     const canvas = document.getElementById('neuralNetworkCanvas');
-    if (!canvas) return;
+    if (!canvas) {
+        console.error('Neural network canvas not found');
+        return;
+    }
+    console.log('Initializing neural network animation');
     
     const ctx = canvas.getContext('2d');
     
@@ -282,11 +286,17 @@ function addAccomplishment(icon, title, description) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded');
+    
     // Image Carousel
     initCarousel();
     
-    // Initialize neural network animation
-    initNeuralNetworkAnimation();
+    // Initialize neural network animation with explicit function call
+    console.log('About to initialize neural network animation');
+    window.setTimeout(() => {
+        initNeuralNetworkAnimation();
+        console.log('Neural network animation initialized');
+    }, 100);
     
     const contactForm = document.getElementById('contactForm');
     
